@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BGM Ultimate Recruit Tracker</title>
     <meta name="theme-color" content="#4f46e5">
-    <link rel="manifest" href="manifest.json">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -32,6 +31,19 @@
             --warning: #f59e0b;
             --danger: #ef4444;
             --info: #3b82f6;
+            --background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            --card-bg: rgba(255, 255, 255, 0.05);
+            --card-border: rgba(255, 255, 255, 0.1);
+        }
+
+        [data-theme="light"] {
+            --background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+            --glass: rgba(255, 255, 255, 0.8);
+            --glass-border: rgba(0, 0, 0, 0.1);
+            --text-dark: #0f172a;
+            --text-light: #1e293b;
+            --card-bg: rgba(255, 255, 255, 0.9);
+            --card-border: rgba(0, 0, 0, 0.1);
         }
         
         * {
@@ -42,10 +54,11 @@
         }
         
         body {
-            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            background: var(--background);
             color: var(--text-light);
             padding: 1rem;
             min-height: 100vh;
+            transition: background 0.3s ease, color 0.3s ease;
         }
         
         .glass-card {
@@ -55,6 +68,7 @@
             border-radius: 12px;
             border: 1px solid var(--glass-border);
             box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2);
+            transition: background 0.3s ease, border-color 0.3s ease;
         }
         
         .auth-container {
@@ -452,6 +466,136 @@
             animation: spin 1s linear infinite;
         }
         
+        /* New UI Elements */
+        .theme-toggle {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--color-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 99;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+        
+        .progress-bar {
+            height: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 0.5rem 0;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: var(--success);
+            border-radius: 4px;
+            transition: width 0.5s ease;
+        }
+        
+        .kanban-board {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .kanban-column {
+            background: var(--card-bg);
+            border-radius: 8px;
+            padding: 1rem;
+            border: 1px solid var(--card-border);
+        }
+        
+        .kanban-column-header {
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--card-border);
+        }
+        
+        .kanban-item {
+            background: var(--glass);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 0.5rem;
+            cursor: move;
+            border: 1px solid var(--glass-border);
+        }
+        
+        .timeline {
+            margin-top: 1rem;
+            position: relative;
+            padding-left: 1.5rem;
+        }
+        
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 2px;
+            background: var(--color-a);
+        }
+        
+        .timeline-item {
+            position: relative;
+            margin-bottom: 1rem;
+            padding-left: 1rem;
+        }
+        
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -1.5rem;
+            top: 0.5rem;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--color-a);
+        }
+        
+        .timeline-date {
+            font-size: 0.8rem;
+            opacity: 0.7;
+        }
+        
+        .timeline-content {
+            margin-top: 0.25rem;
+        }
+        
+        .filter-bar {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+            padding: 1rem;
+            background: var(--card-bg);
+            border-radius: 8px;
+            border: 1px solid var(--card-border);
+        }
+        
+        .filter-group {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .demo-banner {
+            background: var(--warning);
+            color: var(--text-dark);
+            padding: 0.5rem;
+            text-align: center;
+            margin-bottom: 1rem;
+            border-radius: 8px;
+            font-weight: 500;
+        }
+        
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
@@ -482,6 +626,10 @@
             .controls {
                 flex-direction: column;
             }
+            
+            .kanban-board {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
@@ -489,6 +637,11 @@
     <!-- Loading Overlay -->
     <div class="loading-overlay" id="loading-overlay">
         <div class="loading-spinner"></div>
+    </div>
+
+    <!-- Theme Toggle -->
+    <div class="theme-toggle glass-card" id="theme-toggle">
+        <i class="fas fa-moon" id="theme-icon"></i>
     </div>
 
     <!-- Login/Signup Screens -->
@@ -501,6 +654,9 @@
                 <button type="submit">Login</button>
             </form>
             <p style="margin-top: 1rem;">Don't have an account? <a href="#" id="show-signup" style="color: var(--color-c);">Sign Up</a></p>
+            <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--glass-border);">
+                <button id="demo-login" class="btn-info" style="width: 100%;">Try Demo Mode</button>
+            </div>
         </div>
         
         <div id="signup-screen" class="auth-container glass-card" style="display: none;">
@@ -516,6 +672,11 @@
 
     <!-- Main App Container -->
     <div id="app-container" style="display: none;">
+        <!-- Demo Mode Banner -->
+        <div id="demo-banner" class="demo-banner" style="display: none;">
+            <i class="fas fa-info-circle"></i> You are in demo mode. Data is stored locally only.
+        </div>
+
         <header class="glass-card">
             <h1>BGM Team Manager</h1>
             <div style="display: flex; gap: 0.5rem;">
@@ -531,18 +692,34 @@
             <div class="stat-card glass-card">
                 <h3>Total Recruits</h3>
                 <div class="stat-value" id="total-recruits">0</div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="total-recruits-progress" style="width: 0%"></div>
+                </div>
+                <small>Goal: 100 recruits</small>
             </div>
             <div class="stat-card glass-card">
                 <h3>Your Referrals</h3>
                 <div class="stat-value" id="your-referrals">0</div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="referrals-progress" style="width: 0%"></div>
+                </div>
+                <small>Goal: 50 referrals</small>
             </div>
             <div class="stat-card glass-card">
                 <h3>Active</h3>
                 <div class="stat-value" id="active-recruits">0</div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="active-progress" style="width: 0%"></div>
+                </div>
+                <small>Goal: 80% active</small>
             </div>
             <div class="stat-card glass-card">
                 <h3>Interns</h3>
                 <div class="stat-value" id="intern-recruits">0</div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="interns-progress" style="width: 0%"></div>
+                </div>
+                <small>Goal: 20 interns</small>
             </div>
         </div>
 
@@ -551,10 +728,18 @@
             <div class="earnings-card">
                 <div class="earnings-title">Total Daily Earnings</div>
                 <div class="earnings-value" id="total-daily">R0</div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="daily-progress" style="width: 0%"></div>
+                </div>
+                <small>Goal: R5000/day</small>
             </div>
             <div class="earnings-card">
                 <div class="earnings-title">Total Monthly Earnings</div>
                 <div class="earnings-value" id="total-monthly">R0</div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="monthly-progress" style="width: 0%"></div>
+                </div>
+                <small>Goal: R150000/month</small>
             </div>
         </div>
 
@@ -570,6 +755,10 @@
                 <div class="stat-card glass-card">
                     <h3>Conversion Rate</h3>
                     <div class="stat-value" id="conversion-rate">0%</div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="conversion-progress" style="width: 0%"></div>
+                    </div>
+                    <small>Goal: 80% conversion</small>
                 </div>
                 <div class="stat-card glass-card">
                     <h3>Top Recruiter</h3>
@@ -578,10 +767,18 @@
                 <div class="stat-card glass-card">
                     <h3>Avg Payment Days</h3>
                     <div class="stat-value" id="avg-payment-days">-</div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="payment-progress" style="width: 0%"></div>
+                    </div>
+                    <small>Goal: < 3 days</small>
                 </div>
                 <div class="stat-card glass-card">
                     <h3>Team Growth</h3>
                     <div class="stat-value" id="team-growth">0%</div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="growth-progress" style="width: 0%"></div>
+                    </div>
+                    <small>Goal: 20% monthly growth</small>
                 </div>
             </div>
             
@@ -589,6 +786,7 @@
                 <button class="tab-btn active" data-tab="performance">Performance</button>
                 <button class="tab-btn" data-tab="recruiters">Recruiters</button>
                 <button class="tab-btn" data-tab="projections">Projections</button>
+                <button class="tab-btn" data-tab="pipeline">Pipeline</button>
             </div>
             
             <div id="team-leader-content">
@@ -622,6 +820,40 @@
                         <canvas id="growth-projection-chart"></canvas>
                     </div>
                 </div>
+                
+                <div id="pipeline-tab" class="dashboard-section" style="display: none;">
+                    <h3 class="dashboard-section-title">Recruitment Pipeline</h3>
+                    <div class="kanban-board" id="recruitment-pipeline">
+                        <div class="kanban-column">
+                            <div class="kanban-column-header">
+                                <h4>Prospects</h4>
+                                <small>Initial contact</small>
+                            </div>
+                            <div id="prospects-column" class="kanban-column-content"></div>
+                        </div>
+                        <div class="kanban-column">
+                            <div class="kanban-column-header">
+                                <h4>Interested</h4>
+                                <small>Considering joining</small>
+                            </div>
+                            <div id="interested-column" class="kanban-column-content"></div>
+                        </div>
+                        <div class="kanban-column">
+                            <div class="kanban-column-header">
+                                <h4>Pending Payment</h4>
+                                <small>Awaiting payment</small>
+                            </div>
+                            <div id="pending-column" class="kanban-column-content"></div>
+                        </div>
+                        <div class="kanban-column">
+                            <div class="kanban-column-header">
+                                <h4>Active</h4>
+                                <small>Fully onboarded</small>
+                            </div>
+                            <div id="active-column" class="kanban-column-content"></div>
+                        </div>
+                    </div>
+                </div>
             </div>
             
             <!-- Performance Assessment Section -->
@@ -636,6 +868,40 @@
 
         <!-- Standard Recruit View -->
         <div id="standard-view">
+            <!-- Filter Bar -->
+            <div class="filter-bar">
+                <div class="filter-group">
+                    <label>Level:</label>
+                    <select id="filter-level">
+                        <option value="">All Levels</option>
+                        <option value="A">A-Level</option>
+                        <option value="B">B-Level</option>
+                        <option value="C">C-Level</option>
+                        <option value="Intern">Interns</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>Status:</label>
+                    <select id="filter-status">
+                        <option value="">All Statuses</option>
+                        <option value="Active">Active</option>
+                        <option value="Inactive">Inactive</option>
+                        <option value="Pending Payment">Pending Payment</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>Sort by:</label>
+                    <select id="sort-by">
+                        <option value="name">Name</option>
+                        <option value="joinDate">Join Date</option>
+                        <option value="referrals">Referrals</option>
+                        <option value="earnings">Earnings Potential</option>
+                    </select>
+                </div>
+                <button id="apply-filters">Apply Filters</button>
+                <button id="clear-filters" class="btn-warning">Clear Filters</button>
+            </div>
+
             <!-- Controls -->
             <div class="controls glass-card">
                 <input type="text" id="search-input" placeholder="Search recruits by name, phone, or status...">
@@ -652,6 +918,7 @@
                 <button class="tab-btn" data-level="B">B-Level</button>
                 <button class="tab-btn" data-level="C">C-Level</button>
                 <button class="tab-btn" data-level="Intern">Interns</button>
+                <button class="tab-btn" data-level="All">All Recruits</button>
             </div>
 
             <!-- Recruits Container -->
@@ -766,6 +1033,17 @@
                         <div class="recruit-info-label">Notes:</div>
                         <div class="recruit-info-value" id="recruit-info-notes"></div>
                     </div>
+                    
+                    <!-- Activity Timeline -->
+                    <div class="recruit-info-row" style="flex-direction: column; align-items: flex-start;">
+                        <div class="recruit-info-label">Activity Timeline:</div>
+                        <div class="timeline" id="recruit-timeline">
+                            <div class="timeline-item">
+                                <div class="timeline-date">Just now</div>
+                                <div class="timeline-content">Profile viewed</div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <div class="recruit-actions">
                     <button id="recruit-info-whatsapp" class="btn-whatsapp">
@@ -780,7 +1058,42 @@
                     <button id="recruit-info-mark-paid" class="btn-success">
                         <i class="fas fa-check"></i> Mark Paid
                     </button>
+                    <button id="recruit-info-log-activity" class="btn-info">
+                        <i class="fas fa-plus"></i> Log Activity
+                    </button>
                 </div>
+            </div>
+        </div>
+
+        <!-- Log Activity Modal -->
+        <div id="log-activity-modal" class="modal">
+            <div class="modal-content glass-card">
+                <h2>Log Activity</h2>
+                <form id="activity-form">
+                    <div style="margin: 1rem 0;">
+                        <label>Activity Type</label>
+                        <select id="activity-type" required>
+                            <option value="Call">Phone Call</option>
+                            <option value="Message">Message</option>
+                            <option value="Meeting">Meeting</option>
+                            <option value="Payment">Payment</option>
+                            <option value="Follow-up">Follow-up</option>
+                            <option value="Note">Note</option>
+                        </select>
+                    </div>
+                    <div style="margin: 1rem 0;">
+                        <label>Date</label>
+                        <input type="datetime-local" id="activity-date" required>
+                    </div>
+                    <div style="margin: 1rem 0;">
+                        <label>Notes</label>
+                        <textarea id="activity-notes" rows="3" required></textarea>
+                    </div>
+                    <div class="controls">
+                        <button type="submit">Save Activity</button>
+                        <button type="button" onclick="closeModal('log-activity-modal')">Cancel</button>
+                    </div>
+                </form>
             </div>
         </div>
 
@@ -901,6 +1214,55 @@
             custom: ""
         };
 
+        // Demo Data
+        const DEMO_RECRUITS = [
+            {
+                id: "demo1",
+                name: "John Smith",
+                phone: "+1234567890",
+                level: "A",
+                jobLevel: "J3",
+                status: "Active",
+                joinDate: "2023-05-15",
+                notes: "Highly motivated individual",
+                referrerId: "",
+                referrerName: "",
+                userId: "demo-user",
+                createdAt: new Date(),
+                lastUpdated: new Date()
+            },
+            {
+                id: "demo2",
+                name: "Sarah Johnson",
+                phone: "+1234567891",
+                level: "B",
+                jobLevel: "J2",
+                status: "Pending Payment",
+                joinDate: "2023-06-20",
+                notes: "Referred by John",
+                referrerId: "demo1",
+                referrerName: "John Smith",
+                userId: "demo-user",
+                createdAt: new Date(),
+                lastUpdated: new Date()
+            },
+            {
+                id: "demo3",
+                name: "Mike Williams",
+                phone: "+1234567892",
+                level: "Intern",
+                trialPeriod: "1 Month Trial",
+                status: "Active",
+                joinDate: "2023-07-10",
+                notes: "Promising intern",
+                referrerId: "demo1",
+                referrerName: "John Smith",
+                userId: "demo-user",
+                createdAt: new Date(),
+                lastUpdated: new Date()
+            }
+        ];
+
         // Main Application Class
         class BGMRecruitTracker {
             constructor() {
@@ -928,6 +1290,14 @@
                     cachedData: {
                         recruits: [],
                         followups: []
+                    },
+                    isDemoMode: false,
+                    currentTheme: 'dark',
+                    activityLogs: {},
+                    filters: {
+                        level: '',
+                        status: '',
+                        sortBy: 'name'
                     }
                 };
 
@@ -937,7 +1307,50 @@
             async init() {
                 this.initJobLevels();
                 this.setupEventListeners();
+                this.loadThemePreference();
                 this.checkAuthState();
+            }
+
+            // Theme Management
+            loadThemePreference() {
+                const savedTheme = localStorage.getItem('bgm-theme');
+                if (savedTheme) {
+                    this.state.currentTheme = savedTheme;
+                    this.applyTheme(savedTheme);
+                }
+            }
+
+            applyTheme(theme) {
+                this.state.currentTheme = theme;
+                document.documentElement.setAttribute('data-theme', theme);
+                localStorage.setItem('bgm-theme', theme);
+                
+                const themeIcon = document.getElementById('theme-icon');
+                if (themeIcon) {
+                    themeIcon.className = theme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
+                }
+            }
+
+            toggleTheme() {
+                const newTheme = this.state.currentTheme === 'dark' ? 'light' : 'dark';
+                this.applyTheme(newTheme);
+            }
+
+            // Demo Mode
+            enableDemoMode() {
+                this.state.isDemoMode = true;
+                this.state.recruits = [...DEMO_RECRUITS];
+                this.state.currentUser = { uid: 'demo-user' };
+                document.getElementById('demo-banner').style.display = 'block';
+                document.getElementById('auth-screens').style.display = 'none';
+                document.getElementById('app-container').style.display = 'block';
+                
+                this.calculateReferralCounts();
+                this.calculateEarnings();
+                this.calculatePerformanceMetrics();
+                this.updateUI();
+                
+                this.showToast("Demo mode activated. Data is stored locally only.");
             }
 
             // Authentication Methods
@@ -988,7 +1401,15 @@
             async logout() {
                 try {
                     this.showLoading(true);
-                    await auth.signOut();
+                    if (this.state.isDemoMode) {
+                        // Reset demo mode
+                        this.state.isDemoMode = false;
+                        document.getElementById('demo-banner').style.display = 'none';
+                        document.getElementById('auth-screens').style.display = 'block';
+                        document.getElementById('app-container').style.display = 'none';
+                    } else {
+                        await auth.signOut();
+                    }
                     this.showToast("Logged out successfully");
                 } catch (error) {
                     console.error("Logout error:", error);
@@ -1021,6 +1442,11 @@
 
             async loadRecruits() {
                 try {
+                    if (this.state.isDemoMode) {
+                        this.state.recruits = [...DEMO_RECRUITS];
+                        return;
+                    }
+
                     const snapshot = await db.collection("recruits")
                         .where("userId", "==", this.state.currentUser.uid)
                         .get();
@@ -1042,6 +1468,11 @@
 
             async loadFollowups() {
                 try {
+                    if (this.state.isDemoMode) {
+                        this.state.followups = [];
+                        return;
+                    }
+
                     const snapshot = await db.collection("followups")
                         .where("userId", "==", this.state.currentUser.uid)
                         .where("completed", "==", false)
@@ -1196,9 +1627,11 @@
                 this.renderTeamLeaderDashboard();
                 this.renderFollowupsList();
                 this.populateReferrers();
+                this.updateProgressBars();
                 
                 if (this.state.isTeamLeaderView) {
                     this.renderTeamPerformanceCharts();
+                    this.renderPipelineView();
                 } else {
                     this.renderStandardCharts();
                 }
@@ -1215,6 +1648,29 @@
                 
                 const internRecruits = this.state.recruits.filter(r => r.level === 'Intern').length;
                 document.getElementById('intern-recruits').textContent = internRecruits;
+            }
+
+            updateProgressBars() {
+                // Update progress bars based on goals
+                const totalRecruits = this.state.recruits.length;
+                document.getElementById('total-recruits-progress').style.width = Math.min((totalRecruits / 100) * 100, 100) + '%';
+                
+                const yourReferrals = this.state.recruits.filter(r => r.referrerId === this.state.currentUser?.uid).length;
+                document.getElementById('referrals-progress').style.width = Math.min((yourReferrals / 50) * 100, 100) + '%';
+                
+                const activeRecruits = this.state.recruits.filter(r => r.status === 'Active').length;
+                const activePercentage = totalRecruits > 0 ? (activeRecruits / totalRecruits) * 100 : 0;
+                document.getElementById('active-progress').style.width = Math.min((activePercentage / 80) * 100, 100) + '%';
+                
+                const internRecruits = this.state.recruits.filter(r => r.level === 'Intern').length;
+                document.getElementById('interns-progress').style.width = Math.min((internRecruits / 20) * 100, 100) + '%';
+                
+                document.getElementById('daily-progress').style.width = Math.min((this.state.earnings.daily / 5000) * 100, 100) + '%';
+                document.getElementById('monthly-progress').style.width = Math.min((this.state.earnings.monthly / 150000) * 100, 100) + '%';
+                
+                document.getElementById('conversion-progress').style.width = Math.min((this.state.performanceMetrics.overallConversion / 80) * 100, 100) + '%';
+                document.getElementById('payment-progress').style.width = Math.min((this.state.performanceMetrics.paymentTimeliness / 100) * 100, 100) + '%';
+                document.getElementById('growth-progress').style.width = Math.min((this.state.performanceMetrics.teamGrowth / 20) * 100, 100) + '%';
             }
 
             renderEarnings() {
@@ -1267,22 +1723,40 @@
                 const container = document.getElementById('recruits-container');
                 if (!container) return;
                 
-                // Sort recruits - either by referral count or default order
-                let filtered = this.state.recruits
-                    .filter(r => r.level === this.state.currentTab)
-                    .filter(r => 
-                        r.name.toLowerCase().includes(filter.toLowerCase()) || 
-                        r.phone.includes(filter) ||
-                        (r.jobLevel && r.jobLevel.toLowerCase().includes(filter.toLowerCase())) ||
-                        r.status.toLowerCase().includes(filter.toLowerCase())
-                    );
+                // Apply filters
+                let filtered = this.state.recruits.filter(r => {
+                    if (this.state.currentTab !== 'All' && r.level !== this.state.currentTab) return false;
+                    if (this.state.filters.level && r.level !== this.state.filters.level) return false;
+                    if (this.state.filters.status && r.status !== this.state.filters.status) return false;
+                    
+                    return r.name.toLowerCase().includes(filter.toLowerCase()) || 
+                           r.phone.includes(filter) ||
+                           (r.jobLevel && r.jobLevel.toLowerCase().includes(filter.toLowerCase())) ||
+                           r.status.toLowerCase().includes(filter.toLowerCase());
+                });
                 
-                if (this.state.sortByReferrals) {
-                    filtered.sort((a, b) => {
-                        const aCount = this.state.referralCounts[a.id] || 0;
-                        const bCount = this.state.referralCounts[b.id] || 0;
-                        return bCount - aCount; // Descending order
-                    });
+                // Apply sorting
+                switch(this.state.filters.sortBy) {
+                    case 'name':
+                        filtered.sort((a, b) => a.name.localeCompare(b.name));
+                        break;
+                    case 'joinDate':
+                        filtered.sort((a, b) => new Date(b.joinDate) - new Date(a.joinDate));
+                        break;
+                    case 'referrals':
+                        filtered.sort((a, b) => {
+                            const aCount = this.state.referralCounts[a.id] || 0;
+                            const bCount = this.state.referralCounts[b.id] || 0;
+                            return bCount - aCount;
+                        });
+                        break;
+                    case 'earnings':
+                        filtered.sort((a, b) => {
+                            const aEarnings = JOB_LEVELS[a.jobLevel]?.monthly || 0;
+                            const bEarnings = JOB_LEVELS[b.jobLevel]?.monthly || 0;
+                            return bEarnings - aEarnings;
+                        });
+                        break;
                 }
                 
                 container.innerHTML = filtered.map(recruit => {
@@ -1311,6 +1785,106 @@
                         </div>
                     `;
                 }).join('');
+            }
+
+            renderPipelineView() {
+                if (!this.state.isTeamLeaderView) return;
+                
+                const prospectsCol = document.getElementById('prospects-column');
+                const interestedCol = document.getElementById('interested-column');
+                const pendingCol = document.getElementById('pending-column');
+                const activeCol = document.getElementById('active-column');
+                
+                if (!prospectsCol) return;
+                
+                // Clear columns
+                prospectsCol.innerHTML = '';
+                interestedCol.innerHTML = '';
+                pendingCol.innerHTML = '';
+                activeCol.innerHTML = '';
+                
+                // Add recruits to appropriate columns
+                this.state.recruits.forEach(recruit => {
+                    const card = document.createElement('div');
+                    card.className = 'kanban-item glass-card';
+                    card.draggable = true;
+                    card.dataset.id = recruit.id;
+                    
+                    const referralCount = this.state.referralCounts[recruit.id] || 0;
+                    
+                    card.innerHTML = `
+                        <h4>${recruit.name}</h4>
+                        <p>${recruit.level} Level</p>
+                        <p>${recruit.phone}</p>
+                        ${referralCount > 0 ? `<p>${referralCount} referrals</p>` : ''}
+                    `;
+                    
+                    // Add drag events
+                    card.addEventListener('dragstart', (e) => {
+                        e.dataTransfer.setData('text/plain', recruit.id);
+                    });
+                    
+                    // Add to appropriate column based on status
+                    if (recruit.status === 'Active') {
+                        activeCol.appendChild(card);
+                    } else if (recruit.status === 'Pending Payment') {
+                        pendingCol.appendChild(card);
+                    } else if (recruit.status === 'Inactive') {
+                        interestedCol.appendChild(card);
+                    } else {
+                        prospectsCol.appendChild(card);
+                    }
+                });
+                
+                // Add drop events to columns
+                const columns = document.querySelectorAll('.kanban-column');
+                columns.forEach(column => {
+                    column.addEventListener('dragover', (e) => {
+                        e.preventDefault();
+                    });
+                    
+                    column.addEventListener('drop', (e) => {
+                        e.preventDefault();
+                        const recruitId = e.dataTransfer.getData('text/plain');
+                        const recruit = this.state.recruits.find(r => r.id === recruitId);
+                        
+                        if (recruit) {
+                            // Determine new status based on column
+                            let newStatus = 'Active';
+                            if (column.id === 'prospects-column') newStatus = 'Prospect';
+                            if (column.id === 'interested-column') newStatus = 'Interested';
+                            if (column.id === 'pending-column') newStatus = 'Pending Payment';
+                            
+                            // Update status
+                            this.updateRecruitStatus(recruitId, newStatus);
+                        }
+                    });
+                });
+            }
+
+            async updateRecruitStatus(id, status) {
+                try {
+                    if (this.state.isDemoMode) {
+                        // Update locally for demo
+                        const recruit = this.state.recruits.find(r => r.id === id);
+                        if (recruit) {
+                            recruit.status = status;
+                            this.updateUI();
+                        }
+                        return;
+                    }
+                    
+                    await db.collection("recruits").doc(id).update({
+                        status: status,
+                        lastUpdated: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+                    
+                    await this.loadAllData();
+                    this.showToast("Recruit status updated");
+                } catch (error) {
+                    console.error("Error updating recruit status:", error);
+                    this.showToast("Error updating status: " + this.getFirebaseError(error), "error");
+                }
             }
 
             renderStandardCharts() {
@@ -1603,6 +2177,28 @@
                     }
 
                     const followUpDate = form.querySelector('#follow-up-date').value;
+                    
+                    if (this.state.isDemoMode) {
+                        // Handle demo mode save
+                        if (this.state.editId) {
+                            const index = this.state.recruits.findIndex(r => r.id === this.state.editId);
+                            if (index !== -1) {
+                                this.state.recruits[index] = { ...this.state.recruits[index], ...recruitData };
+                            }
+                        } else {
+                            const newId = 'demo-' + Date.now();
+                            this.state.recruits.push({
+                                id: newId,
+                                ...recruitData
+                            });
+                        }
+                        
+                        this.closeModal('recruit-modal');
+                        this.updateUI();
+                        this.showToast(`Recruit ${this.state.editId ? 'updated' : 'added'} successfully`);
+                        return;
+                    }
+
                     const recruitRef = this.state.editId 
                         ? db.collection("recruits").doc(this.state.editId)
                         : db.collection("recruits").doc();
@@ -1715,6 +2311,18 @@
             async markRecruitAsPaid(id) {
                 try {
                     this.showLoading(true);
+                    
+                    if (this.state.isDemoMode) {
+                        const recruit = this.state.recruits.find(r => r.id === id);
+                        if (recruit) {
+                            recruit.status = "Active";
+                            this.updateUI();
+                            this.showToast("Recruit marked as paid successfully");
+                            this.closeModal('recruit-info-modal');
+                        }
+                        return;
+                    }
+                    
                     await db.collection("recruits").doc(id).update({
                         status: "Active",
                         lastPaymentDate: firebase.firestore.FieldValue.serverTimestamp()
@@ -1770,6 +2378,15 @@
             async completeFollowup(id) {
                 try {
                     this.showLoading(true);
+                    
+                    if (this.state.isDemoMode) {
+                        // Remove from demo followups
+                        this.state.followups = this.state.followups.filter(f => f.id !== id);
+                        this.renderFollowupsList();
+                        this.showToast("Follow-up marked as completed");
+                        return;
+                    }
+                    
                     await db.collection("followups").doc(id).update({
                         completed: true,
                         completedAt: firebase.firestore.FieldValue.serverTimestamp()
@@ -1794,6 +2411,13 @@
                     const newDate = prompt("Enter new follow-up date (YYYY-MM-DD):", currentDate.toISOString().split('T')[0]);
                     
                     if (newDate) {
+                        if (this.state.isDemoMode) {
+                            followup.dueDate = new Date(newDate);
+                            this.renderFollowupsList();
+                            this.showToast("Follow-up rescheduled successfully");
+                            return;
+                        }
+                        
                         await db.collection("followups").doc(id).update({
                             dueDate: firebase.firestore.Timestamp.fromDate(new Date(newDate))
                         });
@@ -1868,6 +2492,63 @@
                     console.error("Error previewing message:", error);
                     this.showToast("Error previewing message", "error");
                 }
+            }
+
+            // Activity Logging
+            logActivity(recruitId, type, notes, date = new Date()) {
+                if (!this.state.activityLogs[recruitId]) {
+                    this.state.activityLogs[recruitId] = [];
+                }
+                
+                this.state.activityLogs[recruitId].unshift({
+                    type,
+                    notes,
+                    date: date.toISOString(),
+                    timestamp: date.getTime()
+                });
+                
+                // Save to localStorage for demo mode
+                if (this.state.isDemoMode) {
+                    localStorage.setItem('bgm-activity-logs', JSON.stringify(this.state.activityLogs));
+                }
+                
+                return this.state.activityLogs[recruitId];
+            }
+
+            loadActivityLogs() {
+                if (this.state.isDemoMode) {
+                    const savedLogs = localStorage.getItem('bgm-activity-logs');
+                    if (savedLogs) {
+                        this.state.activityLogs = JSON.parse(savedLogs);
+                    }
+                }
+                // In a real app, you would load from Firestore here
+            }
+
+            renderActivityTimeline(recruitId) {
+                const timeline = document.getElementById('recruit-timeline');
+                if (!timeline) return;
+                
+                const activities = this.state.activityLogs[recruitId] || [];
+                
+                if (activities.length === 0) {
+                    timeline.innerHTML = '<div class="timeline-item"><div class="timeline-content">No activities logged yet</div></div>';
+                    return;
+                }
+                
+                timeline.innerHTML = activities.map(activity => {
+                    const date = new Date(activity.date);
+                    const formattedDate = date.toLocaleString();
+                    
+                    return `
+                        <div class="timeline-item">
+                            <div class="timeline-date">${formattedDate}</div>
+                            <div class="timeline-content">
+                                <strong>${activity.type}:</strong> ${activity.notes}
+                            </div>
+                        </div>
+                    `;
+                }).join('');
             }
 
             // Performance Analysis
@@ -2036,6 +2717,14 @@
                     if (!confirm(`Delete ${recruit.name} permanently?`)) return;
                     
                     this.showLoading(true);
+                    
+                    if (this.state.isDemoMode) {
+                        this.state.recruits = this.state.recruits.filter(r => r.id !== id);
+                        this.updateUI();
+                        this.showToast("Recruit deleted successfully");
+                        return;
+                    }
+                    
                     await db.collection("recruits").doc(id).delete();
                     await this.loadAllData();
                     this.showToast("Recruit deleted successfully");
@@ -2145,7 +2834,7 @@
                     // Add temporary styling for export
                     const originalBackground = leaderboardElement.style.backgroundColor;
                     const originalPadding = leaderboardElement.style.padding;
-                    const originalBorderRadius = leaderboardElement.style.borderRadius;
+                    const originalBorderRadius = leaderboardElement.style.borrowRadius;
                     
                     leaderboardElement.style.backgroundColor = 'white';
                     leaderboardElement.style.padding = '20px';
@@ -2196,9 +2885,33 @@
                 
                 if (this.state.isTeamLeaderView) {
                     this.renderTeamPerformanceCharts();
+                    this.renderPipelineView();
                 } else {
                     this.renderStandardCharts();
                 }
+            }
+
+            applyFilters() {
+                this.state.filters.level = document.getElementById('filter-level').value;
+                this.state.filters.status = document.getElementById('filter-status').value;
+                this.state.filters.sortBy = document.getElementById('sort-by').value;
+                
+                this.renderRecruits();
+            }
+
+            clearFilters() {
+                document.getElementById('filter-level').value = '';
+                document.getElementById('filter-status').value = '';
+                document.getElementById('sort-by').value = 'name';
+                document.getElementById('search-input').value = '';
+                
+                this.state.filters = {
+                    level: '',
+                    status: '',
+                    sortBy: 'name'
+                };
+                
+                this.renderRecruits();
             }
 
             showToast(message, type = "success") {
@@ -2243,6 +2956,17 @@
 
             // Event Listeners
             setupEventListeners() {
+                // Theme Toggle
+                document.getElementById('theme-toggle').addEventListener('click', () => {
+                    this.toggleTheme();
+                });
+
+                // Demo Mode
+                document.getElementById('demo-login').addEventListener('click', (e) => {
+                    e.preventDefault();
+                    this.enableDemoMode();
+                });
+
                 // Auth Events
                 document.getElementById('login-form').addEventListener('submit', (e) => {
                     e.preventDefault();
@@ -2309,13 +3033,36 @@
                     this.toggleSortByReferrals();
                 });
 
+                document.getElementById('apply-filters').addEventListener('click', () => {
+                    this.applyFilters();
+                });
+
+                document.getElementById('clear-filters').addEventListener('click', () => {
+                    this.clearFilters();
+                });
+
                 // Tabs
                 document.querySelectorAll('.tab-btn').forEach(btn => {
                     btn.addEventListener('click', () => {
                         document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
                         btn.classList.add('active');
-                        this.state.currentTab = btn.dataset.level;
-                        this.renderRecruits();
+                        
+                        if (btn.dataset.level) {
+                            this.state.currentTab = btn.dataset.level;
+                            this.renderRecruits();
+                        } else if (btn.dataset.tab) {
+                            // Team leader dashboard tabs
+                            document.getElementById('performance-tab').style.display = 'none';
+                            document.getElementById('recruiters-tab').style.display = 'none';
+                            document.getElementById('projections-tab').style.display = 'none';
+                            document.getElementById('pipeline-tab').style.display = 'none';
+                            
+                            document.getElementById(`${btn.dataset.tab}-tab`).style.display = 'block';
+                            
+                            if (btn.dataset.tab === 'pipeline') {
+                                this.renderPipelineView();
+                            }
+                        }
                     });
                 });
 
@@ -2399,20 +3146,6 @@
                     this.toggleTeamLeaderView();
                 });
 
-                // Team Leader Dashboard Tabs
-                document.querySelectorAll('#team-leader-dashboard .tab-btn').forEach(btn => {
-                    btn.addEventListener('click', () => {
-                        document.querySelectorAll('#team-leader-dashboard .tab-btn').forEach(b => b.classList.remove('active'));
-                        btn.classList.add('active');
-                        
-                        document.getElementById('performance-tab').style.display = 'none';
-                        document.getElementById('recruiters-tab').style.display = 'none';
-                        document.getElementById('projections-tab').style.display = 'none';
-                        
-                        document.getElementById(`${btn.dataset.tab}-tab`).style.display = 'block';
-                    });
-                });
-
                 // Export Leaderboard
                 document.getElementById('export-leaderboard-btn').addEventListener('click', () => {
                     this.exportLeaderboard();
@@ -2427,6 +3160,32 @@
                 document.getElementById('export-btn').addEventListener('click', () => {
                     this.exportToExcel();
                 });
+
+                // Activity Logging
+                document.getElementById('recruit-info-log-activity').addEventListener('click', () => {
+                    if (!this.state.currentRecruit) return;
+                    
+                    document.getElementById('activity-date').value = new Date().toISOString().slice(0, 16);
+                    this.openModal('log-activity-modal');
+                });
+
+                document.getElementById('activity-form').addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    
+                    const type = document.getElementById('activity-type').value;
+                    const notes = document.getElementById('activity-notes').value;
+                    const date = new Date(document.getElementById('activity-date').value);
+                    
+                    if (this.state.currentRecruit) {
+                        this.logActivity(this.state.currentRecruit.id, type, notes, date);
+                        this.renderActivityTimeline(this.state.currentRecruit.id);
+                        this.closeModal('log-activity-modal');
+                        this.showToast("Activity logged successfully");
+                    }
+                });
+
+                // Load activity logs
+                this.loadActivityLogs();
             }
 
             renderBulkMessageRecruits() {
@@ -2491,6 +3250,9 @@
                         document.getElementById('recruit-info-trial-row').style.display = 'none';
                         document.getElementById('recruit-info-job-level').textContent = recruit.jobLevel || 'Not specified';
                     }
+                    
+                    // Render activity timeline
+                    this.renderActivityTimeline(recruit.id);
                     
                     // Set up button event handlers
                     const whatsappBtn = document.getElementById('recruit-info-whatsapp');
