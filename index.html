@@ -596,6 +596,179 @@
             font-weight: 500;
         }
         
+        /* NEW ENHANCEMENTS */
+        
+        /* Enhanced animations */
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        @keyframes slideIn {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        
+        .animate-pulse {
+            animation: pulse 2s infinite;
+        }
+        
+        .animate-slide-in {
+            animation: slideIn 0.5s ease-out;
+        }
+        
+        /* Enhanced card hover effects */
+        .recruit-card:hover {
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        /* Improved form styling */
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+        
+        /* Enhanced table styling */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+            background: var(--glass);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .data-table th, .data-table td {
+            padding: 0.75rem;
+            text-align: left;
+            border-bottom: 1px solid var(--glass-border);
+        }
+        
+        .data-table th {
+            background: rgba(0, 0, 0, 0.1);
+            font-weight: 600;
+        }
+        
+        .data-table tr:last-child td {
+            border-bottom: none;
+        }
+        
+        /* Enhanced tooltips */
+        .tooltip {
+            position: relative;
+            display: inline-block;
+            cursor: help;
+        }
+        
+        .tooltip .tooltip-text {
+            visibility: hidden;
+            width: 200px;
+            background-color: var(--color-primary);
+            color: white;
+            text-align: center;
+            border-radius: 6px;
+            padding: 5px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 0.8rem;
+        }
+        
+        .tooltip:hover .tooltip-text {
+            visibility: visible;
+            opacity: 1;
+        }
+        
+        /* Enhanced notification system */
+        .notification-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background-color: var(--danger);
+            color: white;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            font-weight: bold;
+        }
+        
+        /* Improved loading states */
+        .skeleton {
+            background: linear-gradient(90deg, rgba(255,255,255,0.1) 25%, rgba(255,255,255,0.2) 50%, rgba(255,255,255,0.1) 75%);
+            background-size: 200% 100%;
+            animation: loading 1.5s infinite;
+            border-radius: 4px;
+            min-height: 1rem;
+        }
+        
+        @keyframes loading {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+        
+        /* Enhanced mobile responsiveness */
+        @media (max-width: 640px) {
+            .mobile-collapse {
+                display: none;
+            }
+            
+            .mobile-expand {
+                width: 100%;
+                margin-bottom: 0.5rem;
+            }
+            
+            .mobile-stack {
+                flex-direction: column;
+            }
+            
+            .mobile-text-center {
+                text-align: center;
+            }
+        }
+        
+        /* Performance optimization classes */
+        .will-change {
+            will-change: transform, opacity;
+        }
+        
+        /* Enhanced accessibility */
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+        
+        /* Focus styles for accessibility */
+        button:focus-visible, 
+        input:focus-visible, 
+        select:focus-visible, 
+        textarea:focus-visible {
+            outline: 2px solid var(--color-a);
+            outline-offset: 2px;
+        }
+
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
@@ -637,20 +810,30 @@
     <!-- Loading Overlay -->
     <div class="loading-overlay" id="loading-overlay">
         <div class="loading-spinner"></div>
+        <div style="margin-top: 1rem; color: white;" id="loading-text">Loading...</div>
     </div>
 
     <!-- Theme Toggle -->
-    <div class="theme-toggle glass-card" id="theme-toggle">
+    <div class="theme-toggle glass-card" id="theme-toggle" aria-label="Toggle dark/light mode">
         <i class="fas fa-moon" id="theme-icon"></i>
     </div>
 
     <!-- Login/Signup Screens -->
     <div id="auth-screens">
-        <div id="login-screen" class="auth-container glass-card">
+        <div id="login-screen" class="auth-container glass-card animate-slide-in">
             <h1>BGM Recruit Tracker</h1>
             <form id="login-form" class="auth-form">
-                <input type="email" id="login-email" placeholder="Email" required>
-                <input type="password" id="login-password" placeholder="Password" required>
+                <div class="form-group">
+                    <input type="email" id="login-email" placeholder="Email" required aria-label="Email address">
+                </div>
+                <div class="form-group">
+                    <input type="password" id="login-password" placeholder="Password" required aria-label="Password">
+                    <div style="text-align: right; margin-top: 0.25rem;">
+                        <button type="button" id="toggle-password" style="background: none; border: none; color: var(--color-c); font-size: 0.8rem; padding: 0;">
+                            <i class="fas fa-eye"></i> Show Password
+                        </button>
+                    </div>
+                </div>
                 <button type="submit">Login</button>
             </form>
             <p style="margin-top: 1rem;">Don't have an account? <a href="#" id="show-signup" style="color: var(--color-c);">Sign Up</a></p>
@@ -662,8 +845,20 @@
         <div id="signup-screen" class="auth-container glass-card" style="display: none;">
             <h1>Create Account</h1>
             <form id="signup-form" class="auth-form">
-                <input type="email" id="signup-email" placeholder="Email" required>
-                <input type="password" id="signup-password" placeholder="Password" required>
+                <div class="form-group">
+                    <input type="email" id="signup-email" placeholder="Email" required aria-label="Email address">
+                </div>
+                <div class="form-group">
+                    <input type="password" id="signup-password" placeholder="Password" required aria-label="Password">
+                    <div style="text-align: right; margin-top: 0.25rem;">
+                        <button type="button" id="toggle-signup-password" style="background: none; border: none; color: var(--color-c); font-size: 0.8rem; padding: 0;">
+                            <i class="fas fa-eye"></i> Show Password
+                        </button>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <input type="password" id="signup-confirm-password" placeholder="Confirm Password" required aria-label="Confirm password">
+                </div>
                 <button type="submit">Sign Up</button>
             </form>
             <p style="margin-top: 1rem;">Already have an account? <a href="#" id="show-login" style="color: var(--color-c);">Login</a></p>
@@ -675,17 +870,39 @@
         <!-- Demo Mode Banner -->
         <div id="demo-banner" class="demo-banner" style="display: none;">
             <i class="fas fa-info-circle"></i> You are in demo mode. Data is stored locally only.
+            <button id="exit-demo" style="margin-left: 1rem; background: rgba(0,0,0,0.2); padding: 0.25rem 0.5rem; font-size: 0.8rem;">
+                Exit Demo
+            </button>
         </div>
 
         <header class="glass-card">
             <h1>BGM Team Manager</h1>
-            <div style="display: flex; gap: 0.5rem;">
+            <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
                 <button id="logout-btn">Logout</button>
                 <button id="export-btn">Export Data</button>
                 <button id="sort-referrals-btn">Sort by Referrals</button>
                 <button id="team-leader-btn" class="btn-info">Team Leader View</button>
+                <div style="position: relative;">
+                    <button id="notifications-btn">
+                        <i class="fas fa-bell"></i>
+                    </button>
+                    <span class="notification-badge" id="notification-count" style="display: none;">0</span>
+                </div>
             </div>
         </header>
+
+        <!-- Notifications Panel -->
+        <div id="notifications-panel" class="glass-card" style="display: none; position: absolute; right: 1rem; top: 80px; z-index: 1000; width: 300px; max-height: 400px; overflow-y: auto;">
+            <div style="padding: 1rem; border-bottom: 1px solid var(--glass-border); display: flex; justify-content: space-between; align-items: center;">
+                <h3>Notifications</h3>
+                <button id="clear-notifications" style="background: none; border: none; color: var(--color-c);">
+                    <i class="fas fa-trash"></i> Clear All
+                </button>
+            </div>
+            <div id="notifications-list">
+                <!-- Notifications will be populated here -->
+            </div>
+        </div>
 
         <!-- Dashboard Stats -->
         <div class="stats-container">
@@ -1157,7 +1374,7 @@
         </div>
 
         <!-- Toast Notification -->
-        <div id="toast" class="toast"></div>
+        <div id="toast" class="toast" role="alert" aria-live="assertive"></div>
     </div>
 
     <script>
@@ -1298,7 +1515,8 @@
                         level: '',
                         status: '',
                         sortBy: 'name'
-                    }
+                    },
+                    notifications: []
                 };
 
                 this.init();
@@ -1309,6 +1527,7 @@
                 this.setupEventListeners();
                 this.loadThemePreference();
                 this.checkAuthState();
+                this.loadActivityLogs();
             }
 
             // Theme Management
@@ -1334,6 +1553,146 @@
             toggleTheme() {
                 const newTheme = this.state.currentTheme === 'dark' ? 'light' : 'dark';
                 this.applyTheme(newTheme);
+            }
+
+            // NEW: Enhanced password visibility toggle
+            initPasswordToggles() {
+                const togglePassword = (buttonId, inputId) => {
+                    const button = document.getElementById(buttonId);
+                    const input = document.getElementById(inputId);
+                    
+                    if (button && input) {
+                        button.addEventListener('click', () => {
+                            const type = input.getAttribute('type') === 'password' ? 'text' : 'password';
+                            input.setAttribute('type', type);
+                            button.innerHTML = type === 'password' ? 
+                                '<i class="fas fa-eye"></i> Show Password' : 
+                                '<i class="fas fa-eye-slash"></i> Hide Password';
+                        });
+                    }
+                };
+                
+                togglePassword('toggle-password', 'login-password');
+                togglePassword('toggle-signup-password', 'signup-password');
+            }
+
+            // NEW: Enhanced signup validation
+            validateSignup() {
+                const password = document.getElementById('signup-password').value;
+                const confirmPassword = document.getElementById('signup-confirm-password').value;
+                
+                if (password !== confirmPassword) {
+                    this.showToast("Passwords do not match", "error");
+                    return false;
+                }
+                
+                if (password.length < 6) {
+                    this.showToast("Password must be at least 6 characters", "error");
+                    return false;
+                }
+                
+                return true;
+            }
+
+            // NEW: Enhanced loading with progress text
+            showLoading(show, text = "Loading...") {
+                try {
+                    const overlay = document.getElementById('loading-overlay');
+                    const textElement = document.getElementById('loading-text');
+                    
+                    if (textElement) {
+                        textElement.textContent = text;
+                    }
+                    
+                    overlay.style.display = show ? 'flex' : 'none';
+                } catch (error) {
+                    console.error("Error showing loading overlay:", error);
+                }
+            }
+
+            // NEW: Notification system
+            addNotification(message, type = "info", action = null) {
+                const notification = {
+                    id: Date.now(),
+                    message,
+                    type,
+                    action,
+                    timestamp: new Date(),
+                    read: false
+                };
+                
+                this.state.notifications.unshift(notification);
+                this.updateNotificationUI();
+                
+                // Show toast for important notifications
+                if (type === "warning" || type === "error") {
+                    this.showToast(message, type);
+                }
+            }
+
+            updateNotificationUI() {
+                const countElement = document.getElementById('notification-count');
+                const listElement = document.getElementById('notifications-list');
+                
+                if (countElement) {
+                    const unreadCount = this.state.notifications.filter(n => !n.read).length;
+                    countElement.textContent = unreadCount;
+                    countElement.style.display = unreadCount > 0 ? 'flex' : 'none';
+                }
+                
+                if (listElement) {
+                    listElement.innerHTML = this.state.notifications.map(notification => `
+                        <div class="notification-item" style="padding: 0.75rem; border-bottom: 1px solid var(--glass-border); 
+                            ${!notification.read ? 'background: rgba(79, 70, 229, 0.1);' : ''}">
+                            <div style="display: flex; justify-content: space-between;">
+                                <p style="margin: 0; font-size: 0.9rem;">${notification.message}</p>
+                                <button class="mark-notification-read" data-id="${notification.id}" 
+                                    style="background: none; border: none; color: var(--color-c);">
+                                    <i class="fas ${notification.read ? 'fa-envelope-open' : 'fa-envelope'}"></i>
+                                </button>
+                            </div>
+                            <div style="font-size: 0.7rem; opacity: 0.7; margin-top: 0.25rem;">
+                                ${this.formatDate(notification.timestamp)}
+                            </div>
+                        </div>
+                    `).join('');
+                    
+                    // Add event listeners to mark as read
+                    document.querySelectorAll('.mark-notification-read').forEach(button => {
+                        button.addEventListener('click', (e) => {
+                            const id = parseInt(e.currentTarget.getAttribute('data-id'));
+                            this.markNotificationAsRead(id);
+                        });
+                    });
+                }
+            }
+
+            markNotificationAsRead(id) {
+                const notification = this.state.notifications.find(n => n.id === id);
+                if (notification) {
+                    notification.read = !notification.read;
+                    this.updateNotificationUI();
+                }
+            }
+
+            // NEW: Date formatting utility
+            formatDate(date) {
+                if (!date) return '';
+                
+                const d = new Date(date);
+                const now = new Date();
+                const diffTime = Math.abs(now - d);
+                const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+                
+                if (diffDays === 0) {
+                    return 'Today at ' + d.toLocaleTimeString();
+                } else if (diffDays === 1) {
+                    return 'Yesterday at ' + d.toLocaleTimeString();
+                } else if (diffDays < 7) {
+                    return `${diffDays} days ago`;
+                } else {
+                    return d.toLocaleDateString();
+                }
             }
 
             // Demo Mode
@@ -1370,7 +1729,7 @@
 
             async login(email, password) {
                 try {
-                    this.showLoading(true);
+                    this.showLoading(true, "Logging in...");
                     await auth.signInWithEmailAndPassword(email, password);
                     this.showToast("Login successful");
                     return true;
@@ -1385,7 +1744,7 @@
 
             async signup(email, password) {
                 try {
-                    this.showLoading(true);
+                    this.showLoading(true, "Creating account...");
                     await auth.createUserWithEmailAndPassword(email, password);
                     this.showToast("Account created successfully");
                     return true;
@@ -1400,7 +1759,7 @@
 
             async logout() {
                 try {
-                    this.showLoading(true);
+                    this.showLoading(true, "Logging out...");
                     if (this.state.isDemoMode) {
                         // Reset demo mode
                         this.state.isDemoMode = false;
@@ -1422,7 +1781,7 @@
             // Data Loading Methods
             async loadAllData() {
                 try {
-                    this.showLoading(true);
+                    this.showLoading(true, "Loading data...");
                     await Promise.all([
                         this.loadRecruits(),
                         this.loadFollowups()
@@ -2237,14 +2596,19 @@
                 const errors = [];
                 
                 requiredFields.forEach(field => {
-                    if (!data[field]) {
+                    if (!data[field] || data[field].toString().trim() === '') {
                         errors.push(`${field} is required`);
                     }
                 });
                 
-                // Phone number validation
-                if (data.phone && !/^\+?\d{10,15}$/.test(data.phone)) {
-                    errors.push("Phone number must be 10-15 digits with optional + prefix");
+                // Phone validation
+                if (data.phone && !/^\+?[\d\s\-\(\)]{10,15}$/.test(data.phone)) {
+                    errors.push("Phone number must be a valid international format");
+                }
+                
+                // Date validation
+                if (data.joinDate && new Date(data.joinDate) > new Date()) {
+                    errors.push("Join date cannot be in the future");
                 }
                 
                 // Level validation
@@ -2255,11 +2619,6 @@
                 // Job level validation for non-interns
                 if (data.level !== 'Intern' && !data.jobLevel) {
                     errors.push("Job level is required for non-intern recruits");
-                }
-                
-                // Join date validation
-                if (data.joinDate && new Date(data.joinDate) > new Date()) {
-                    errors.push("Join date cannot be in the future");
                 }
                 
                 return errors.length === 0 ? true : errors;
@@ -2310,7 +2669,7 @@
 
             async markRecruitAsPaid(id) {
                 try {
-                    this.showLoading(true);
+                    this.showLoading(true, "Updating payment status...");
                     
                     if (this.state.isDemoMode) {
                         const recruit = this.state.recruits.find(r => r.id === id);
@@ -2377,7 +2736,7 @@
 
             async completeFollowup(id) {
                 try {
-                    this.showLoading(true);
+                    this.showLoading(true, "Completing follow-up...");
                     
                     if (this.state.isDemoMode) {
                         // Remove from demo followups
@@ -2403,7 +2762,7 @@
 
             async rescheduleFollowup(id) {
                 try {
-                    this.showLoading(true);
+                    this.showLoading(true, "Rescheduling follow-up...");
                     const followup = this.state.followups.find(f => f.id === id);
                     if (!followup) return;
                     
@@ -2447,7 +2806,7 @@
 
             async sendBulkMessages(recruitIds, templateKey, customVars = {}) {
                 try {
-                    this.showLoading(true);
+                    this.showLoading(true, "Sending messages...");
                     const recruits = this.state.recruits.filter(r => recruitIds.includes(r.id));
                     const template = MESSAGE_TEMPLATES[templateKey] || templateKey;
                     
@@ -2554,7 +2913,7 @@
             // Performance Analysis
             async analyzeTeamPerformance() {
                 try {
-                    this.showLoading(true);
+                    this.showLoading(true, "Analyzing team performance...");
                     // Simulate AI analysis (in a real app, this would call an API)
                     const analysis = this.generatePerformanceAnalysis();
                     
@@ -2716,7 +3075,7 @@
                     
                     if (!confirm(`Delete ${recruit.name} permanently?`)) return;
                     
-                    this.showLoading(true);
+                    this.showLoading(true, "Deleting recruit...");
                     
                     if (this.state.isDemoMode) {
                         this.state.recruits = this.state.recruits.filter(r => r.id !== id);
@@ -2780,12 +3139,12 @@
 
             async exportToExcel() {
                 try {
-                    this.showLoading(true);
+                    this.showLoading(true, "Preparing export...");
                     const headers = [
                         "Name", "Phone", "Level", "Job Level", "Trial Period",
-                        "Daily Earnings", "Monthly Earnings", 
+                        "Daily Earnings", "Monthly Earnings", "Ads Count", "Ad Rate",
                         "Status", "Join Date", "Referrer", 
-                        "Referrals", "Notes"
+                        "Referrals", "Notes", "Last Updated"
                     ];
                     
                     const data = this.state.recruits.map(r => {
@@ -2798,11 +3157,14 @@
                             r.level === 'Intern' ? r.trialPeriod : 'N/A',
                             r.level !== 'Intern' && jobData.daily ? `R${jobData.daily}` : 'N/A',
                             r.level !== 'Intern' && jobData.monthly ? `R${jobData.monthly}` : 'N/A',
+                            r.level !== 'Intern' && jobData.ads ? jobData.ads : 'N/A',
+                            r.level !== 'Intern' && jobData.rate ? `R${jobData.rate}` : 'N/A',
                             r.status, 
                             r.joinDate, 
                             r.referrerName || 'None',
                             this.state.referralCounts[r.id] || 0,
-                            r.notes || ''
+                            r.notes || '',
+                            r.lastUpdated ? new Date(r.lastUpdated).toLocaleDateString() : 'N/A'
                         ];
                     });
                     
@@ -2817,7 +3179,8 @@
                     link.href = url;
                     link.download = `bgm-recruits-${new Date().toISOString().split('T')[0]}.csv`;
                     link.click();
-                    this.showToast("Data exported successfully");
+                    
+                    this.addNotification("Data exported successfully", "success");
                 } catch (error) {
                     console.error("Error exporting data:", error);
                     this.showToast("Error exporting data", "error");
@@ -2828,7 +3191,7 @@
 
             async exportLeaderboard() {
                 try {
-                    this.showLoading(true);
+                    this.showLoading(true, "Exporting leaderboard...");
                     const leaderboardElement = document.getElementById('recruiter-leaderboard');
                     
                     // Add temporary styling for export
@@ -2929,15 +3292,6 @@
                 }
             }
 
-            showLoading(show) {
-                try {
-                    const overlay = document.getElementById('loading-overlay');
-                    overlay.style.display = show ? 'flex' : 'none';
-                } catch (error) {
-                    console.error("Error showing loading overlay:", error);
-                }
-            }
-
             getFirebaseError(error) {
                 if (error.code) {
                     switch (error.code) {
@@ -2967,6 +3321,13 @@
                     this.enableDemoMode();
                 });
 
+                // NEW: Exit demo mode
+                document.getElementById('exit-demo').addEventListener('click', () => {
+                    this.state.isDemoMode = false;
+                    document.getElementById('demo-banner').style.display = 'none';
+                    this.logout();
+                });
+
                 // Auth Events
                 document.getElementById('login-form').addEventListener('submit', (e) => {
                     e.preventDefault();
@@ -2977,9 +3338,11 @@
 
                 document.getElementById('signup-form').addEventListener('submit', (e) => {
                     e.preventDefault();
-                    const email = document.getElementById('signup-email').value;
-                    const password = document.getElementById('signup-password').value;
-                    this.signup(email, password);
+                    if (this.validateSignup()) {
+                        const email = document.getElementById('signup-email').value;
+                        const password = document.getElementById('signup-password').value;
+                        this.signup(email, password);
+                    }
                 });
 
                 document.getElementById('show-signup').addEventListener('click', (e) => {
@@ -2996,6 +3359,21 @@
 
                 document.getElementById('logout-btn').addEventListener('click', () => {
                     this.logout();
+                });
+
+                // NEW: Password visibility toggles
+                this.initPasswordToggles();
+
+                // NEW: Notifications panel toggle
+                document.getElementById('notifications-btn').addEventListener('click', () => {
+                    const panel = document.getElementById('notifications-panel');
+                    panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
+                });
+
+                // NEW: Clear notifications
+                document.getElementById('clear-notifications').addEventListener('click', () => {
+                    this.state.notifications = [];
+                    this.updateNotificationUI();
                 });
 
                 // Recruit Management Events
@@ -3293,4 +3671,4 @@
         }
     </script>
 </body>
-    </html>
+</html>
